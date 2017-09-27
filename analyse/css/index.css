@@ -1,0 +1,30 @@
+@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Rubik+Mono+One);
+@import url(./reset.css);
+
+body {
+  font: 20px "Rubik Mono One", sans-serif;;
+  background: #e3e3e3;
+  overflow: hidden;
+}
+
+#btn {
+  display: flex;
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
+  color: #3e3e3e;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity .2s ease-in-out;
+}
+
+#btn.off {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#canvas {
+  display: block;
+}
