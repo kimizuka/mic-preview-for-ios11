@@ -1,18 +1,19 @@
 (function() {
 
   "use strict";
+
+  const btn = document.getElementById("btn");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  navigator.mediaDevices.getUserMedia({
+    audio: true,
+    video: false
+  }).then(_handleSuccess).catch(_handleError);
   
-  let btn    = document.getElementById("btn"),
-      canvas = document.getElementById("canvas"),
-      ctx    = canvas.getContext("2d");
-  
-  navigator.getUserMedia({
-    audio: true
-  }, _handleSuccess, _handleError);
-  
-  function _handleSuccess(evt) {
+  function _handleSuccess(stream) {
     btn.addEventListener("click", () => {
-      _handleClick(evt);
+      _handleClick(stream);
     }, false);
   }
 
@@ -20,17 +21,16 @@
     alert("Error!");
   }
 
-  function _handleClick(evt) {
-    let LENGTH   = 16,
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
-        options  = {
-          mediaStream : evt
-        },
-        src      = audioCtx.createMediaStreamSource(evt),
-        analyser = audioCtx.createAnalyser(evt),
-        data   = new Uint8Array(LENGTH),
-        w      = 0,
-        i      = 0;
+  function _handleClick(stream) {
+    const LENGTH = 16;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const options  = {
+      mediaStream : stream
+    };
+    const src = audioCtx.createMediaStreamSource(stream);
+    const analyser = audioCtx.createAnalyser(stream);
+    const data = new Uint8Array(LENGTH);
+    let w = 0;
 
     btn.classList.add("off");
     analyser.fftSize = 1024;
@@ -46,12 +46,11 @@
 
       analyser.getByteFrequencyData(data);
 
-      for (i = 0; i < LENGTH; ++i) {
+      for (let i = 0; i < LENGTH; ++i) {
         ctx.rect(i * w, canvas.height - data[i] * 2, w, data[i] * 2);
       }
 
       ctx.fill();
     }, 20);
   }
-
 })();
